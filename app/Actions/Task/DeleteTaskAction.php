@@ -3,7 +3,6 @@
 namespace App\Actions\Task;
 
 use App\Models\Task;
-use Illuminate\Support\Facades\DB;
 
 class DeleteTaskAction
 {

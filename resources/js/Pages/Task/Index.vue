@@ -4,7 +4,7 @@ import { Link, useForm } from '@inertiajs/vue3';
 import DangerButton from '@/Components/DangerButton.vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 defineProps({
     tasks: Array,
@@ -12,8 +12,13 @@ defineProps({
 
 const confirmingTaskDeletion = ref(false);
 const taskId = ref(null);
-
+const activeMap = reactive({});
 const form = useForm({});
+const formComment = useForm({
+    content: '',
+    task_id: '',
+});
+const formDelete = useForm({});
 
 const confirmTaskDeletion = (id) => {
     confirmingTaskDeletion.value = true;
@@ -32,13 +37,44 @@ const closeModal = () => {
 
     form.reset();
 };
+
+const toggleAccordion = (index) => {
+    activeMap[index] = !activeMap[index];
+    formComment.task_id = index ? index : '';
+}
+
+const saveComment = (index) => {
+    formComment.post(route('comment.store'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            formComment.reset();
+            toggleAccordion(index);
+        },
+    });
+}
+
+const destroyComment = (id) => {
+    formDelete.delete(route('comment.destroy', id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            formDelete.reset();
+        },
+    });
+}
+
 </script>
 
+<style scoped>
+    .is-open {
+        display: block !important;
+    }
+</style>
+
 <template>
-    <AppLayout title="Todo">
+    <AppLayout title="Task">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Todo
+                Task
             </h2>
         </template>
 
@@ -60,8 +96,25 @@ const closeModal = () => {
                                     {{ tag.name }}
                                 </span>
                             </div>
+                            <div class="my-2 hidden" :class="{ 'is-open': !!activeMap[task.id] }">
+                                <label for="comment" class="block text-sm font-medium text-gray-700">Comment</label>
+
+                                <div class="my-2 bg-gray-100 p-2 rounded" v-if="task.comments.length">
+                                    <div class="flex justify-between ml-3 text-sm text-gray-600 p-2 bg-white border border-gray-300 mb-1 rounded" v-for="comment in task.comments" :key="comment.id">
+                                        <p>{{ comment.content }}</p>
+                                        <button @click="destroyComment(comment.id)" class="btn-danger">X</button>
+                                    </div>
+                                </div>
+
+                                <textarea v-model="formComment.content" class="w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                <button class="btn-primary mb-2" @click="saveComment(task.id)">Save</button>
+                                
+                            </div>
                             <div class="flex justify-between mt-4">
-                                <Link :href="`/task/${task.id}/edit`" class="btn-info">Edit</Link>
+                                <div>
+                                    <button @click="toggleAccordion(task.id)" class="btn-secondary mr-2">Comment <span class="bg-red-500 text-white text-xs px-1 rounded">{{ task.comments.length }}</span></button>
+                                    <Link :href="`/task/${task.id}/edit`" class="btn-info">Edit</Link>
+                                </div>
                                 <button @click="confirmTaskDeletion(task.id)" class="btn-danger">Hapus</button>
                             </div>
                         </div>

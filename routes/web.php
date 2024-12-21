@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\CommentController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -25,4 +26,6 @@ Route::middleware([
 
     Route::get('/dashboard', [TaskController::class, 'index'])->name('dashboard');
     Route::resource('task', TaskController::class)->except(['index', 'show']);
+    Route::post('comment', [CommentController::class, 'store'])->name('comment.store');
+    Route::delete('comment/{id}', [CommentController::class, 'destroy'])->name('comment.destroy');
 });

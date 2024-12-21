@@ -23,10 +23,10 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout title="Create Todo">
+    <AppLayout title="Create Task">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Create Todo
+                Create Task
             </h2>
         </template>
 
