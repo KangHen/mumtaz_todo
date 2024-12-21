@@ -27,7 +27,7 @@ Ini merupakan Task Assignment Backend Developer. Hendri Argadiyanto (hendriarga2
  - buka terminal baru pada project anda
  - jalankan `php artisan test`
 
-Demikian, semoga test berjalan dengan baik.  Saya tidak mengharapkapkan di terima, karena mungkin project ini tidaklah sempurna. Akan tetapi saya sudah berusaha dan project ini menjadi tambahan portfolio saya.
+Demikian, semoga test berjalan dengan baik.  Saya tidak mengharapkapkan di terima, akan tetapi apabila di terima Alhamdulillah, karena mungkin project ini tidaklah sempurna. Akan tetapi saya sudah berusaha dan project ini menjadi tambahan portfolio saya.
 
 **Terima Kasih**
 
