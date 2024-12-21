@@ -5,3 +5,34 @@
 [x-cloak] {
     display: none;
 }
+
+.btn-primary {
+    @apply px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest disabled:opacity-50 transition ease-in-out duration-150
+}
+.btn-primary:hover {
+    @apply bg-gray-700;
+}
+
+.btn-info {
+    @apply px-2 py-1 bg-blue-300 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest disabled:opacity-50 transition ease-in-out duration-150
+}
+
+.btn-info:hover {
+    @apply bg-blue-400;
+}
+
+.btn-danger {
+    @apply px-2 py-1 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest disabled:opacity-50 transition ease-in-out duration-150
+}
+
+.btn-danger:hover {
+    @apply bg-red-700;
+}
+
+.btn-light {
+    @apply px-4 py-2 bg-white text-gray-900 font-medium rounded border;
+}
+
+.btn-light:hover {
+    @apply text-white bg-gray-500;
+}

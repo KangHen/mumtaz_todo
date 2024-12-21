@@ -18,8 +18,7 @@ class CreateTaskAction
             ]);
 
             if (isset($data['tags'])) {
-                $tagIds = Tag::whereIn('id', $data['tags'])->pluck('id');
-                $task->tags()->sync($tagIds);
+                $task->tags()->attach($data['tags']);
             }
 
             return $task;

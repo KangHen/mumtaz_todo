@@ -13,4 +13,12 @@ class TaskService
             ->with(['tags', 'comments'])
             ->get();
     }
+
+    public function getTaskById(int $id): Task
+    {
+        return Task::query()
+            ->where('id', $id)
+            ->with(['tags', 'comments'])
+            ->firstOrFail();
+    }
 }

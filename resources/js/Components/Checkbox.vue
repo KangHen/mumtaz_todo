@@ -11,7 +11,7 @@ const props = defineProps({
     value: {
         type: String,
         default: null,
-    },
+    }
 });
 
 const proxyChecked = computed({
