@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Task\CreateTaskAction;
-use App\Actions\Task\DeleteTaskAction;
 use App\Actions\Task\UpdateTaskAction;
+use App\Events\TaskEvent;
 use App\Services\TagService;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
@@ -26,7 +26,10 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = $this->taskService->getAllTasksForUser($this->userId);
-        return Inertia::render('Task/Index', ['tasks' => $tasks]);
+        return Inertia::render('Task/Index', [
+            'tasks' => $tasks,
+            'notification' => session('notification')
+        ]);
     }
 
     /**
@@ -51,9 +54,11 @@ class TaskController extends Controller
         ]);
 
         $validated['user_id'] = $this->userId;
-        $createTaskAction->create($validated);
+        $task = $createTaskAction->create($validated);
 
-        return redirect()->route('dashboard')->with('success', 'Task created successfully!');
+        TaskEvent::dispatch($task, 'Task created');
+
+        return redirect()->route('dashboard')->with('notification', 'Task created successfully!');
     }
 
     /**
@@ -84,18 +89,25 @@ class TaskController extends Controller
             'tags.*' => 'exists:tags,id',
         ]);
 
-        $updateTaskAction->update($validated, $id);
+        $task = $updateTaskAction->update($validated, $id);
 
-        return redirect()->route('dashboard')->with('success', 'Task updated successfully!');
+        TaskEvent::dispatch($task, 'Task updated');
+
+        return redirect()->route('dashboard')->with('notification', 'Task updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DeleteTaskAction $deleteTaskAction, int $id)
+    public function destroy(int $id)
     {
-        $deleteTaskAction->delete($id);
+        $task = $taskTmp = $this->taskService->getTaskById($id);
 
-        return redirect()->route('dashboard')->with('success', 'Task deleted successfully!');
+        $task->delete();
+
+        TaskEvent::dispatch($taskTmp, 'Task deleted');
+
+
+        return redirect()->route('dashboard')->with('notification', 'Task deleted successfully!');
     }
 }

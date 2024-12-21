@@ -4,10 +4,12 @@ import { Link, useForm } from '@inertiajs/vue3';
 import DangerButton from '@/Components/DangerButton.vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import Notification from '@/Components/Notification.vue';
 import { reactive, ref } from 'vue';
 
 defineProps({
     tasks: Array,
+    notification: String,
 });
 
 const confirmingTaskDeletion = ref(false);
@@ -72,6 +74,8 @@ const destroyComment = (id) => {
 
 <template>
     <AppLayout title="Task">
+        <Notification :message="notification"/>
+
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Task
