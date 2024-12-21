@@ -1,6 +1,6 @@
-## Mumtaz Assesment Test Backend Developer
+## Mumtaz Task Assignment Backend Developer
 
-Ini merupakan test assesment Backend Developer. Hendri Argadiyanto (hendriarga28@gmail.com)
+Ini merupakan Task Assignment Backend Developer. Hendri Argadiyanto (hendriarga28@gmail.com)
 ``` Stack Menggunakan Laravel 11, SQLite, Inertia Vue, Tailwind```
 
 **Langkah 1 - Persiapan**
