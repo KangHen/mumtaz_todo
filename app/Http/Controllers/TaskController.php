@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Task\CreateTaskAction;
+use App\Actions\Task\DeleteTaskAction;
+use App\Actions\Task\UpdateTaskAction;
 use App\Services\TagService;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
@@ -59,22 +61,41 @@ class TaskController extends Controller
      */
     public function edit(string $id)
     {
-        
+        $tags = $this->tagService->getAllTags();
+        $task = $this->taskService->getTaskById($id);
+        $taskTags = $task->tags->pluck('id')->toArray();
+
+        return Inertia::render('Task/Edit', [
+            'task' => $task,
+            'tags' => $tags,
+            'taskTags' => $taskTags
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, UpdateTaskAction $updateTaskAction, int $id)
     {
-        
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'tags' => 'array',
+            'tags.*' => 'exists:tags,id',
+        ]);
+
+        $updateTaskAction->update($validated, $id);
+
+        return redirect()->route('dashboard')->with('success', 'Task updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(DeleteTaskAction $deleteTaskAction, int $id)
     {
-        //
+        $deleteTaskAction->delete($id);
+
+        return redirect()->route('dashboard')->with('success', 'Task deleted successfully!');
     }
 }

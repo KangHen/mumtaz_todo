@@ -1,10 +1,37 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, useForm } from '@inertiajs/vue3';
+import DangerButton from '@/Components/DangerButton.vue';
+import DialogModal from '@/Components/DialogModal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { ref } from 'vue';
 
 defineProps({
     tasks: Array,
 });
+
+const confirmingTaskDeletion = ref(false);
+const taskId = ref(null);
+
+const form = useForm({});
+
+const confirmTaskDeletion = (id) => {
+    confirmingTaskDeletion.value = true;
+    taskId.value = id;
+};
+
+const deleteTask = () => {
+    form.delete(route('task.destroy', taskId.value), {
+        preserveScroll: true,
+        onSuccess: () => closeModal()
+    });
+};
+
+const closeModal = () => {
+    confirmingTaskDeletion.value = false;
+
+    form.reset();
+};
 </script>
 
 <template>
@@ -29,18 +56,43 @@ defineProps({
                             </h2>
                             <p>{{ task.description }}</p>
                             <div>
-                                <span v-for="tag in task.tags" :key="tag.id" class="inline-block bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded">
+                                <span v-for="tag in task.tags" :key="tag.id" class="inline-block bg-green-100 text-green-800 text-sm px-2 py-1 rounded mr-2">
                                     {{ tag.name }}
                                 </span>
                             </div>
                             <div class="flex justify-between mt-4">
-                                <Link :href="`/tasks/${task.id}/edit`" class="btn-info">Edit</Link>
-                                <button class="btn-danger">Hapus</button>
+                                <Link :href="`/task/${task.id}/edit`" class="btn-info">Edit</Link>
+                                <button @click="confirmTaskDeletion(task.id)" class="btn-danger">Hapus</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <DialogModal :show="confirmingTaskDeletion" @close="closeModal">
+                <template #title>
+                    Delete Task
+                </template>
+
+                <template #content>
+                    Are you sure you want to delete your Task?
+                </template>
+
+                <template #footer>
+                    <SecondaryButton @click="closeModal">
+                        Cancel
+                    </SecondaryButton>
+
+                    <DangerButton
+                        class="ms-3"
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"
+                        @click="deleteTask"
+                    >
+                        Delete Task
+                    </DangerButton>
+                </template>
+        </DialogModal>
     </AppLayout>
 </template>
